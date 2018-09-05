@@ -1,65 +1,83 @@
-$(document).ready(function() {
-
-
-$('#form_firstname').on('input', function() {
-});
-
-$('#form_firstname').on('input', function() {
-	var input=$(this);
-	var is_name=input.val();
-	if(is_name){input.removeClass("invalid").addClass("valid");}
-	else{input.removeClass("valid").addClass("invalid");}
-});
-
-$('#form_lastname').on('input', function() {
-});
-
-$('#form_lastname').on('input', function() {
-	var input=$(this);
-	var is_name=input.val();
-	if(is_name){input.removeClass("invalid").addClass("valid");}
-	else{input.removeClass("valid").addClass("invalid");}
-});
-
-
-$('#form_email').on('input', function() {
-});
-
-
-$('#form_email').on('input', function() {
-	var input=$(this);
-	var re = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-	var is_email=re.test(input.val());
-	if(is_email){input.removeClass("invalid").addClass("valid");}
-	else{input.removeClass("valid").addClass("invalid");}
-});
-
-
-$("#submit button").click(function(event){
-}); 
-
-$("#submit button").click(function(event){
-	var form_data=$("#form").serializeArray();
-	var error_free=true;
-	for (var input in form_data){
-        var element=$("#form_"+form_data[input]['firstname']);
-        var element=$("#form_"+form_data[input]['lastname']);
-        var element=$("#form_"+form_data[input]['email']);
-		var valid=element.hasClass("valid");
-		var error_element=$("span", element.parent());
-		if (!valid){error_element.removeClass("error").addClass("error_show"); error_free=false;}
-		else{error_element.removeClass("error_show").addClass("error");}
+// chat box popover content and show upon load
+$("#chatPopover").popover({
+	title: `How can we help you?<button id="popoverClose" type="button" class="ml-auto close" aria-label="Close">
+		<span aria-hidden="true">&times;</span>
+	  </button>`,
+	content: `
+		  <form>
+			<label for="question">Ask a question.</label>
+			<input type="text" class="form-control" id="question">
+			<button style="margin-top: 0.5rem;" type="submit" class="btn">Submit</button>
+		  </form>
+		  `,
+	html: true,
+	placement: "top",
+	trigger: "manual"
+  }).popover("show");
+  
+  // Popover event listener
+  $("body").on("click", "#popoverClose", function() {
+	$("#chatPopover").popover("toggle");
+	$(".chat").toggleClass("closed-state");
+  });
+  
+  // toggle button color and popover
+  $(".chat").click(function() {
+	$("#chatPopover").popover("toggle");
+	$(this).toggleClass("closed-state");
+  });
+  
+  //  modal interactivity
+  $("#signUpBtn").click(function() {
+  
+	// store input values as variables
+	var name = $("#firstName").val();
+	var name = $("#lastName").val();
+	var email = $("#eMail").val();
+  
+	// if both name and email are not empty, then change modal content
+	if (email !== "" && name !== "") {
+	  $(".modal-title").html("Many thanks for signing up " + name + "-Egg!");
+	  $(".modal-body").html("Lazy eggs are on the way!");
+	  $(".modal-footer").hide();
 	}
-	if (!error_free){
-        event.preventDefault(); 
-        alert('No errors: Form will be submitted');
+	else {
+	  // clear the current alert if any
+	  $("#emailAlert").hide();
+	  $("#firstnameAlert").hide();
+	  $("#lastnameAlert").hide();
+	  // show respective alerts if field empty
+	  if (email === "") {
+		$("#emailAlert").show();
+	  }
+	  if (name === "") {
+		$("#firstnameAlert").show();
+		$("#lastnameAlert").show();
+	  }
 	}
-	else{
-		alert('Error: Form incomplete');
-	}
-});
-
-
-
-});
-
+  });
+  
+  // Add to cart
+  
+  // initialize cart value at 0
+  var cartNumber = 0;
+  
+  // listen, tally, display badge
+  $("#addToCart").click(function() {
+  
+	// prevent reload
+	event.preventDefault();
+  
+	// store input as variable
+	var additionalValue = $("#quantity").val();
+  
+	// Tally
+	cartNumber = cartNumber + parseInt(additionalValue);
+  
+	// Change html
+	$("#cartItems").html(cartNumber);
+  
+	// Show the badge
+	$("#cartItems").show();
+  });
+  
